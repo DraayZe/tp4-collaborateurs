@@ -7,11 +7,9 @@ import java.util.List;
 
 /**
  * Opérations sur les équipes (JPA).
- *
- * Même organisation que CollaborateurService : un EntityManager par méthode,
- * une transaction pour chaque écriture. Toutes les vérifications ont lieu avant
+ * Un EntityManager par méthode et une transaction pour chaque écriture. Toutes les vérifications ont lieu avant
  * la moindre modification : une opération refusée lève une RegleMetierException,
- * la transaction est annulée (rollback) et la base n'est pas modifiée.
+ * la transaction est annulée et la base n'est pas modifiée.
  */
 public class EquipeService {
 
@@ -21,7 +19,6 @@ public class EquipeService {
         this.fabrique = fabrique;
     }
 
-    // --- Lecture ---
 
     /** Toutes les équipes, par ordre alphabétique. */
     public List<Equipe> toutes() {
@@ -33,7 +30,6 @@ public class EquipeService {
 
     /**
      * Retrouve une équipe par son nom (casse ignorée).
-     *
      * @throws EquipeIntrouvableException si aucune équipe ne porte ce nom.
      */
     public Equipe trouverParNom(String nom) {
@@ -44,7 +40,6 @@ public class EquipeService {
 
     /**
      * Collaborateurs d'une équipe, par identifiant.
-     *
      * @throws EquipeIntrouvableException si l'équipe n'existe pas.
      */
     public List<Collaborateur> membres(String nomEquipe) {
@@ -62,11 +57,8 @@ public class EquipeService {
         }
     }
 
-    // --- Écriture ---
-
     /**
      * Crée une équipe.
-     *
      * @throws OperationRefuseeException si le nom est vide, trop long ou déjà utilisé (casse ignorée).
      */
     public Equipe creer(String nom) {
@@ -92,11 +84,9 @@ public class EquipeService {
 
     /**
      * Affecte un collaborateur sans équipe à une équipe.
-     *
      * Équipe et collaborateur sont chargés avec le même EntityManager, dans la même
      * transaction : au commit, Hibernate détecte le changement et génère l'UPDATE,
      * exactement comme pour augmenterSalaire au TP4.
-     *
      * @throws CollaborateurIntrouvableException, EquipeIntrouvableException
      * @throws OperationRefuseeException si le collaborateur a déjà une équipe (même celle-ci).
      */
@@ -122,7 +112,6 @@ public class EquipeService {
 
     /**
      * Retire un collaborateur de l'équipe indiquée.
-     *
      * @throws CollaborateurIntrouvableException, EquipeIntrouvableException
      * @throws OperationRefuseeException s'il n'est pas membre de cette équipe
      *         (sans équipe, ou membre d'une autre équipe).
@@ -195,7 +184,6 @@ public class EquipeService {
 
     /**
      * Charge une équipe par son nom.
-     *
      * @throws EquipeIntrouvableException si elle n'existe pas.
      */
     private static Equipe chargerEquipe(EntityManager em, String nom) {

@@ -71,7 +71,6 @@ public abstract class Collaborateur {
     // --- Comportements ---
 
     /** Augmente le salaire du pourcentage donné. Ignoré si le pourcentage est négatif ou nul. */
-    /** Augmente le salaire du pourcentage donné. Ignoré si le pourcentage est négatif ou nul. */
     public void augmenterSalaire(double pourcentage) {
         if (pourcentage > 0) {
             double avant = salaire;

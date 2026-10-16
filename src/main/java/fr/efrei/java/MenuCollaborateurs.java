@@ -3,11 +3,7 @@ package fr.efrei.java;
 import java.util.List;
 import java.util.Scanner;
 
-/**
- * Sous-menu « Collaborateurs » : reprise du menu du TP4.
- * Les recherches et tris réutilisent l'Annuaire, rempli depuis la base à chaque demande,
- * pour que la base reste la seule source de vérité.
- */
+/* Sous-menu "Collaborateurs" */
 public class MenuCollaborateurs {
 
     private final CollaborateurService service;

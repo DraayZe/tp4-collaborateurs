@@ -4,9 +4,8 @@ import java.util.List;
 import java.util.Scanner;
 
 /**
- * Sous-menu « Équipes ».
- * Toute la logique est dans EquipeService ; ici on ne fait que saisir et afficher.
- * Les erreurs métier sont attrapées une seule fois, dans la boucle.
+ * Sous-menu Equipes.
+ * Toute la logique est dans EquipeService? ici on ne fait que saisir et afficher.
  */
 public class MenuEquipes {
 
@@ -55,6 +54,7 @@ public class MenuEquipes {
         System.out.println("0. Retour");
         System.out.print("Votre choix : ");
     }
+
 
     private void listerEquipes() {
         List<Equipe> equipes = service.toutes();
