@@ -8,6 +8,7 @@ import jakarta.persistence.*;
  * Mission 9 : entité avec sa propre table, clé générée par la base.
  */
 @Entity
+@Table(name = "adresse")
 public class Adresse {
 
     @Id

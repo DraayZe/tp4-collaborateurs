@@ -14,6 +14,7 @@ import jakarta.persistence.*;
  * et d'une méthode abstraite getMetier() pour les affichages polymorphes.
  */
 @Entity
+@Table(name = "collaborateur")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "type")
 public abstract class Collaborateur {
@@ -37,6 +38,10 @@ public abstract class Collaborateur {
     @JoinColumn(name = "adresse_id", nullable = false)
     private Adresse adresse;
 
+    @ManyToOne                               // pas de cascade : l'équipe existe déjà en base
+    @JoinColumn(name = "equipe_id")          // nullable : un collaborateur peut n'avoir aucune équipe
+    private Equipe equipe;
+
     protected Collaborateur() { }   // exigé par JPA
 
     protected Collaborateur(
@@ -59,6 +64,9 @@ public abstract class Collaborateur {
     public String getNom()         { return nom; }
     public double getSalaire()     { return salaire; }
     public Adresse getAdresse()    { return adresse; }
+    public Equipe getEquipe()      { return equipe; }
+
+    public void setEquipe(Equipe equipe) { this.equipe = equipe; }
 
     // --- Comportements ---
 
@@ -88,6 +96,7 @@ public abstract class Collaborateur {
         System.out.println("[" + identifiant + "] " + prenom + " " + nom);
         System.out.println("Métier  : " + getMetier());
         System.out.println("Salaire : " + salaire + " €");
+        System.out.println("Équipe  : " + (equipe == null ? "sans équipe" : equipe.getNom()));
         System.out.println("Adresse :");
         adresse.afficher();
     }

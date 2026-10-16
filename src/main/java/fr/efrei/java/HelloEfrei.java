@@ -20,16 +20,7 @@ public class HelloEfrei {
         EntityManagerFactory fabrique = Persistence.createEntityManagerFactory("collaborateurs-pu");
         CollaborateurService service = new CollaborateurService(fabrique);
 
-        // --- Initialisation de l'annuaire avec les données de démonstration ---
-        Annuaire annuaire = new Annuaire();
-        for (Collaborateur c : DonneesDemo.creerCollaborateurs()) {
-            try {
-                annuaire.ajouter(c);
-            } catch (CollaborateurDejaExistantException e) {
-                System.out.println("Ajout impossible : l'identifiant " + e.identifiant() + " est déjà utilisé.");
-            }
-        }
-        service.enregistrerSiAbsents(DonneesDemo.creerCollaborateurs());
+        Annuaire annuaire = new Annuaire();   // vide : sera alimenté depuis la base en tâche 3
 
 
         Scanner scanner = new Scanner(System.in);
