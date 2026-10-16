@@ -131,8 +131,10 @@ l'application démarre quand même, sur des tables vides.
 supprimer une équipe ; affecter, retirer, lister les membres ; collaborateurs
 sans équipe), avec les règles métier demandées et la persistance en base.
 
-**Ce qui reste incomplet** : l'étape 9 (finalisation du journal, port 3306,
-archive). Les bonus (transfert direct,
+**Ce qui reste incomplet** : les bonus du sujet (transfert direct entre équipes,
+vue d'ensemble des effectifs) n'ont pas été réalisés. Avant le dépôt : passer
+`persistence.xml` sur le port 3306 (nos machines de développement utilisent 3307)
+et construire l'archive. Les bonus (transfert direct,
 vue d'ensemble des effectifs) ne sont pas prévus.
 
 **Difficultés significatives** :
@@ -176,10 +178,34 @@ minuscules, Entrée à vide, tous les collaborateurs affectés : tous **OK**.
 
 ## 4. README — Lancer et essayer l'application
 
-*(à compléter à l'étape 9)*
+**Prérequis** : JDK 23, Maven (ou IntelliJ IDEA, qui embarque Maven), XAMPP avec
+MariaDB démarré sur le port 3306, utilisateur `root` sans mot de passe
+(configuration par défaut de XAMPP, visée par `src/main/resources/META-INF/persistence.xml`).
 
-**Prérequis** : JDK 23, Maven (ou IntelliJ IDEA), XAMPP avec MariaDB démarré,
-utilisateur `root` sans mot de passe.
+**Préparer la base** : ouvrir phpMyAdmin (`http://localhost/phpmyadmin`), onglet
+*Importer*, choisir `sql/efreiforge.sql`, cliquer sur *Exécuter*. La base
+`efreiforge` est créée avec 3 adresses, 8 collaborateurs (programmeurs et
+testeurs), 2 équipes (Dev : C001, C002, C003 ; Support : C004, C005) et
+3 collaborateurs sans équipe (C006, C007, C008). Le script peut être rejoué
+autant de fois que nécessaire : il repart de zéro à chaque import. En ligne de
+commande : `mysql -u root < sql/efreiforge.sql`.
+
+**Démarrer** : à la racine du projet,
+`mvn compile exec:java -Dexec.mainClass=fr.efrei.java.EfreiForgeApp`
+(ou, dans IntelliJ, clic droit sur `EfreiForgeApp` → *Run*). Le menu principal
+propose *Collaborateurs* (menu du TP4) et *Équipes*.
+
+**Essayer** (menu *Équipes*) :
+1. `1` : les équipes Dev et Support s'affichent.
+2. `8` : C006, C007 et C008 sont sans équipe.
+3. `2` puis `Alpha` : l'équipe est créée. `2` puis `alpha` : refusée (doublon, casse ignorée).
+4. `6`, `C006`, `Alpha` : C006 est affecté. `5`, `Alpha` : il apparaît dans l'équipe.
+5. `6`, `C006`, `Dev` : refusé, il a déjà une équipe.
+6. `4`, `Alpha` : refusé tant qu'elle a un membre. `7`, `C006`, `Alpha` puis `4`, `Alpha` : supprimée.
+7. `0`, `0` pour quitter, relancer : tout est retrouvé en base.
+
+Taper du texte quand un nombre est attendu, ou un nom d'équipe et un identifiant
+inexistants, donne un message clair sans arrêter l'application.
 
 ## 5. Contribution de chacun
 
