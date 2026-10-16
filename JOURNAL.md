@@ -16,7 +16,7 @@ requêtes, script SQL) puis un plan de 9 étapes :
 5. Affecter un collaborateur, afficher les membres ✔
 6. Retirer un collaborateur, lister les sans-équipe ✔
 7. Renommer et supprimer une équipe ✔
-8. Robustesse (base arrêtée) et recette complète
+8. Robustesse (base arrêtée) et recette complète ✔
 9. Journal, port 3306, archive
 
 **Éléments du TP4 réutilisés** : les entités `Collaborateur`, `Programmeur`,
@@ -117,8 +117,22 @@ l'application démarre quand même, sur des tables vides.
   refusé ; supprimer Dev refusé (3 collaborateurs) ; supprimer ALPHA refusé tant
   que C006 y est, accepté une fois C006 retiré ; Gamma (vide) supprimée. La base
   ne contient plus que Dev et Support, et C006 est sans équipe.
+- Étape 8 : robustesse vérifiée. Base arrêtée avant le lancement :
+  `Persistence.createEntityManagerFactory` lève une `PersistenceException`, attrapée
+  dans `main`, qui affiche « Impossible de se connecter à la base de données » et
+  un conseil, puis s'arrête proprement. Base coupée pendant l'utilisation : la
+  `PersistenceException` remonte du sous-menu jusqu'à la boucle principale, qui
+  affiche « Erreur d'accès à la base de données : opération annulée » et revient
+  au menu ; une fois la base redémarrée, tout refonctionne sans relancer
+  l'application. La recette complète (tableau ci-dessous) a ensuite été rejouée
+  sur une base réimportée : 8 scénarios sur 8 OK.
 
-**Ce qui reste incomplet** : les étapes 8 et 9. Les bonus (transfert direct,
+**Bilan** : tous les besoins du sujet sont couverts (créer, consulter, renommer,
+supprimer une équipe ; affecter, retirer, lister les membres ; collaborateurs
+sans équipe), avec les règles métier demandées et la persistance en base.
+
+**Ce qui reste incomplet** : l'étape 9 (finalisation du journal, port 3306,
+archive). Les bonus (transfert direct,
 vue d'ensemble des effectifs) ne sont pas prévus.
 
 **Difficultés significatives** :
@@ -139,18 +153,26 @@ vue d'ensemble des effectifs) ne sont pas prévus.
 
 ### Tableau de recette
 
-*(à remplir à l'étape 8, avec les résultats réellement constatés)*
+Rejouée le 16 octobre 2026 sur une base fraîchement importée (Dev, Support ;
+C006, C007, C008 sans équipe), en deux lancements : scénarios 1 à 5, arrêt de
+l'application, puis 6 à 8. Le détail des messages obtenus est dans
+`docs/recette.md`.
 
 | N° | Scénario | Résultat attendu | Constaté |
 |---|---|---|---|
-| 1 | Créer « Alpha », puis « alpha », puis une équipe sans nom | La première est créée ; les deux autres sont refusées | |
-| 2 | Affecter à « Alpha » un collaborateur sans équipe, afficher « Alpha » | Le collaborateur apparaît dans l'équipe | |
-| 3 | Affecter ce collaborateur à une autre équipe, puis de nouveau à « Alpha » | Deux refus ; il reste dans « Alpha » | |
-| 4 | Retirer d'« Alpha » un collaborateur sans équipe, puis un membre d'une autre équipe | Deux refus, aucune donnée modifiée | |
-| 5 | Afficher les collaborateurs sans équipe | Le collaborateur affecté n'y figure pas ; les autres y sont | |
-| 6 | Arrêter puis relancer, consulter équipes et affectations | Tout est retrouvé à l'identique | |
-| 7 | Renommer (casse seule, puis nom déjà pris) ; supprimer une équipe non vide, puis une vide | Casse : acceptée ; nom pris : refusé ; suppression refusée puis acceptée | |
-| 8 | Équipe ou collaborateur inexistant ; texte à la place d'un nombre | Message clair, l'application ne plante pas | |
+| 1 | Créer « Alpha », puis « alpha », puis une équipe sans nom | La première est créée ; les deux autres sont refusées | **OK** |
+| 2 | Affecter à « Alpha » C006 (sans équipe), afficher « Alpha » | Le collaborateur apparaît dans l'équipe | **OK** |
+| 3 | Affecter C006 à « Dev », puis de nouveau à « Alpha » | Deux refus ; il reste dans « Alpha » | **OK** |
+| 4 | Retirer d'« Alpha » C007 (sans équipe), puis C001 (membre de Dev) | Deux refus, aucune donnée modifiée | **OK** — listes d'Alpha et de Dev inchangées |
+| 5 | Afficher les collaborateurs sans équipe | C006 n'y figure pas ; C007 et C008 y sont | **OK** |
+| 6 | Arrêter puis relancer, consulter équipes et affectations | Tout est retrouvé à l'identique | **OK** — Alpha avec C006, C007 et C008 sans équipe |
+| 7 | Renommer Alpha → ALPHA, puis ALPHA → dev ; supprimer Dev (non vide), puis ALPHA une fois vidée | Casse : acceptée ; nom pris : refusé ; suppression refusée puis acceptée | **OK** |
+| 8 | Équipe « Omega », collaborateur C042 ; « abc » comme choix de menu et comme pourcentage | Message clair, l'application ne plante pas | **OK** |
+
+Scénarios ajoutés : base arrêtée avant le lancement (message clair, arrêt propre),
+base coupée pendant l'utilisation (message, retour au menu, l'application
+continue), nom entouré d'espaces, nom de 60 caractères, identifiant en
+minuscules, Entrée à vide, tous les collaborateurs affectés : tous **OK**.
 
 ## 4. README — Lancer et essayer l'application
 
