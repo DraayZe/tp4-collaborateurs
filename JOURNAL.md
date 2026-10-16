@@ -13,7 +13,7 @@ requêtes, script SQL) puis un plan de 9 étapes :
 2. Script SQL et jeu de données ✔
 3. Point d'entrée `EfreiForgeApp` et menu Collaborateurs ✔
 4. Exceptions métier, création et liste des équipes ✔
-5. Affecter un collaborateur, afficher les membres
+5. Affecter un collaborateur, afficher les membres ✔
 6. Retirer un collaborateur, lister les sans-équipe
 7. Renommer et supprimer une équipe
 8. Robustesse (base arrêtée) et recette complète
@@ -87,8 +87,19 @@ l'application démarre quand même, sur des tables vides.
   « alpha » refusée, nom vide refusé ; en plus, « ␣␣Gamma␣␣ » est enregistrée
   « Gamma » et un nom de 60 caractères est refusé avec un message, pas une
   erreur SQL.
+- Étape 5 : `EquipeService.affecter` charge le collaborateur et l'équipe avec le
+  même `EntityManager`, dans la même transaction, vérifie que le collaborateur
+  n'a pas déjà d'équipe, puis appelle `setEquipe` ; Hibernate génère l'`UPDATE` au
+  `commit`, comme pour l'augmentation de salaire au TP4. `membres` liste les
+  collaborateurs d'une équipe (JPQL `where c.equipe = :equipe`). Options 5 et 6
+  du menu. Vérifié, scénarios 2 et 3 : C006 affecté à « alpha » (casse ignorée)
+  apparaît dans Alpha ; l'affecter à Dev puis de nouveau à Alpha donne deux refus
+  « C006 appartient déjà à l'équipe Alpha » et il reste dans Alpha ; C042 et
+  « Omega » donnent « introuvable ». Un identifiant tapé en minuscules (`c001`)
+  est accepté, MariaDB ignorant la casse ; la fiche reprend alors la saisie
+  (`[c001]`), ce que nous avons jugé acceptable.
 
-**Ce qui reste incomplet** : les étapes 5 à 9. Les bonus (transfert direct,
+**Ce qui reste incomplet** : les étapes 6 à 9. Les bonus (transfert direct,
 vue d'ensemble des effectifs) ne sont pas prévus.
 
 **Difficultés significatives** :

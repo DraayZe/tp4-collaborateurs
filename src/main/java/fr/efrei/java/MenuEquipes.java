@@ -28,6 +28,8 @@ public class MenuEquipes {
                     case 0 -> { }
                     case 1 -> listerEquipes();
                     case 2 -> creerEquipe();
+                    case 5 -> afficherMembres();
+                    case 6 -> affecterCollaborateur();
                     case -1 -> System.out.println("Saisie invalide : entrez un nombre.");
                     default -> System.out.println("Option invalide. Choisissez entre 0 et 8.");
                 }
@@ -68,5 +70,26 @@ public class MenuEquipes {
         String nom = Saisie.lireTexte(scanner, "Nom de la nouvelle équipe : ");
         Equipe equipe = service.creer(nom);
         System.out.println("Équipe « " + equipe.getNom() + " » créée.");
+    }
+
+    private void afficherMembres() {
+        String nom = Saisie.lireTexte(scanner, "Nom de l'équipe : ");
+        Equipe equipe = service.trouverParNom(nom);          // pour afficher le nom avec sa vraie casse
+        List<Collaborateur> membres = service.membres(nom);
+        if (membres.isEmpty()) {
+            System.out.println("L'équipe " + equipe.getNom() + " n'a aucun membre.");
+            return;
+        }
+        System.out.println("Membres de l'équipe " + equipe.getNom() + " (" + membres.size() + ") :");
+        for (Collaborateur c : membres) {
+            System.out.println("  " + c);
+        }
+    }
+
+    private void affecterCollaborateur() {
+        String identifiant = Saisie.lireTexte(scanner, "Identifiant du collaborateur : ");
+        String nom = Saisie.lireTexte(scanner, "Nom de l'équipe : ");
+        service.affecter(identifiant, nom);
+        System.out.println(identifiant + " affecté à l'équipe " + nom + ".");
     }
 }

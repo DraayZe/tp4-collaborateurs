@@ -42,6 +42,17 @@ public class EquipeService {
         }
     }
 
+    /**
+     * Collaborateurs d'une équipe, par identifiant.
+     *
+     * @throws EquipeIntrouvableException si l'équipe n'existe pas.
+     */
+    public List<Collaborateur> membres(String nomEquipe) {
+        try (EntityManager em = fabrique.createEntityManager()) {
+            return membresDe(em, chargerEquipe(em, nomEquipe));
+        }
+    }
+
     // --- Écriture ---
 
     /**
@@ -70,7 +81,58 @@ public class EquipeService {
         }
     }
 
+    /**
+     * Affecte un collaborateur sans équipe à une équipe.
+     *
+     * Équipe et collaborateur sont chargés avec le même EntityManager, dans la même
+     * transaction : au commit, Hibernate détecte le changement et génère l'UPDATE,
+     * exactement comme pour augmenterSalaire au TP4.
+     *
+     * @throws CollaborateurIntrouvableException, EquipeIntrouvableException
+     * @throws OperationRefuseeException si le collaborateur a déjà une équipe (même celle-ci).
+     */
+    public void affecter(String identifiant, String nomEquipe) {
+        try (EntityManager em = fabrique.createEntityManager()) {
+            EntityTransaction transaction = em.getTransaction();
+            transaction.begin();
+            try {
+                Collaborateur collaborateur = chargerCollaborateur(em, identifiant);
+                Equipe equipe = chargerEquipe(em, nomEquipe);
+                if (collaborateur.getEquipe() != null) {
+                    throw new OperationRefuseeException(collaborateur.getIdentifiant()
+                            + " appartient déjà à l'équipe " + collaborateur.getEquipe().getNom() + ".");
+                }
+                collaborateur.setEquipe(equipe);
+                transaction.commit();
+            } catch (RuntimeException e) {
+                transaction.rollback();
+                throw e;
+            }
+        }
+    }
+
     // --- Méthodes privées partagées ---
+
+    /** Membres d'une équipe déjà chargée, par identifiant. */
+    private static List<Collaborateur> membresDe(EntityManager em, Equipe equipe) {
+        return em.createQuery("select c from Collaborateur c where c.equipe = :equipe order by c.identifiant",
+                              Collaborateur.class)
+                 .setParameter("equipe", equipe)
+                 .getResultList();
+    }
+
+    /**
+     * Charge un collaborateur par son identifiant.
+     *
+     * @throws CollaborateurIntrouvableException s'il n'existe pas.
+     */
+    private static Collaborateur chargerCollaborateur(EntityManager em, String identifiant) {
+        Collaborateur collaborateur = em.find(Collaborateur.class, identifiant);
+        if (collaborateur == null) {
+            throw new CollaborateurIntrouvableException(identifiant);
+        }
+        return collaborateur;
+    }
 
     /** Nettoie le nom saisi et refuse un nom vide ou trop long pour la colonne. */
     private static String nomValide(String nom) {
