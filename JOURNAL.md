@@ -10,7 +10,7 @@ Avant de coder, nous avons écrit une courte spécification (classes, règles m�
 requêtes, script SQL) puis un plan de 9 étapes :
 
 1. Mapping JPA de l'équipe ✔
-2. Script SQL et jeu de données
+2. Script SQL et jeu de données ✔
 3. Point d'entrée `EfreiForgeApp` et menu Collaborateurs
 4. Exceptions métier, création et liste des équipes
 5. Affecter un collaborateur, afficher les membres
@@ -36,7 +36,16 @@ créer une deuxième table selon la machine de l'enseignant. Nous avons donc fix
 script SQL utilise exactement ces noms. Le sujet recommande cette annotation
 pour la même raison.
 
-**Un script SQL qui repart de zéro.** *(à compléter à l'étape 2)*
+**Un script SQL qui repart de zéro.** `sql/efreiforge.sql` crée la base si elle
+n'existe pas, puis supprime et recrée les trois tables (`DROP TABLE IF EXISTS`
+puis `CREATE TABLE`) avant d'insérer le jeu de données. Il peut donc être rejoué
+autant de fois que nécessaire sans erreur, et la recette part toujours du même
+état connu. L'alternative (`CREATE TABLE IF NOT EXISTS` + `INSERT IGNORE`) aurait
+conservé les données existantes, mais rendu le résultat dépendant de ce qui
+s'était passé avant. Nous avons gardé `hbm2ddl.auto = update` dans
+`persistence.xml` : quand le script a été importé, Hibernate constate que les
+tables correspondent au mapping et ne touche à rien ; si on l'oublie,
+l'application démarre quand même, sur des tables vides.
 
 ## 3. État du projet
 
@@ -49,8 +58,13 @@ pour la même raison.
   au TP4, jamais utilisée) a été supprimée. Le chargement automatique des données
   de démonstration au démarrage a été retiré : c'est le script SQL qui fournit
   les données.
+- Étape 2 : le script `sql/efreiforge.sql` crée la base `efreiforge` avec
+  3 adresses, 2 équipes (Dev, Support) et 8 collaborateurs (5 affectés, 3 sans
+  équipe). Importé deux fois de suite sans erreur. L'application du TP4 lancée
+  sur cette base affiche la fiche de C001 avec « Équipe : Dev », et Hibernate ne
+  crée aucune table supplémentaire : le script et le mapping sont alignés.
 
-**Ce qui reste incomplet** : les étapes 2 à 9. Les bonus (transfert direct,
+**Ce qui reste incomplet** : les étapes 3 à 9. Les bonus (transfert direct,
 vue d'ensemble des effectifs) ne sont pas prévus.
 
 **Difficultés significatives** :
