@@ -44,8 +44,10 @@ autant de fois que nécessaire sans erreur, et la recette part toujours du même
 conservé les données existantes, mais rendu le résultat dépendant de ce qui
 s'était passé avant. Nous avons gardé `hbm2ddl.auto = update` dans
 `persistence.xml` : quand le script a été importé, Hibernate constate que les
-tables correspondent au mapping et ne touche à rien ; si on l'oublie,
-l'application démarre quand même, sur des tables vides.
+tables correspondent au mapping et ne touche à rien. Si la base `efreiforge`
+existe mais sans tables, Hibernate les crée vides ; si la base n'existe pas du
+tout, l'application affiche « Impossible de se connecter » et s'arrête (`update`
+crée des tables, jamais une base).
 
 ## 3. État du projet
 
@@ -134,8 +136,7 @@ sans équipe), avec les règles métier demandées et la persistance en base.
 **Ce qui reste incomplet** : les bonus du sujet (transfert direct entre équipes,
 vue d'ensemble des effectifs) n'ont pas été réalisés. Avant le dépôt : passer
 `persistence.xml` sur le port 3306 (nos machines de développement utilisent 3307)
-et construire l'archive. Les bonus (transfert direct,
-vue d'ensemble des effectifs) ne sont pas prévus.
+et construire l'archive.
 
 **Difficultés significatives** :
 
@@ -152,13 +153,24 @@ vue d'ensemble des effectifs) ne sont pas prévus.
 - Accents cassés (« Fran├ºois ») après un import du script en ligne de commande
   sans préciser l'encodage. Ajout de `SET NAMES utf8mb4;` en tête du script :
   le fichier est en UTF-8 et le serveur le sait, quel que soit le client.
+- Accents cassés à la **saisie** quand l'application est lancée depuis cmd ou
+  PowerShell (relevé lors de la relecture finale, puis reproduit) : depuis Java 18
+  le `Scanner` décode le clavier en UTF-8, alors que la console Windows envoie
+  les caractères dans sa page de code (cp850). « Équipe Données » arrivait en
+  base sous la forme « �quipe Donn�es ». Corrigé par
+  `new Scanner(System.in, System.out.charset())` : le clavier est lu avec
+  l'encodage de la console, quel qu'il soit. Vérifié en cp850 et en UTF-8.
+- MariaDB compare les noms avec la collation `utf8mb4_general_ci`, qui ignore la
+  casse mais aussi les accents : « Equipe » et « Équipe » sont considérées comme
+  le même nom. C'est un peu plus large que la règle du sujet (casse seule), et
+  nous l'avons gardé : le message de refus affiche le nom déjà existant, ce qui
+  reste compréhensible.
 
 ### Tableau de recette
 
 Rejouée le 16 octobre 2026 sur une base fraîchement importée (Dev, Support ;
 C006, C007, C008 sans équipe), en deux lancements : scénarios 1 à 5, arrêt de
-l'application, puis 6 à 8. Le détail des messages obtenus est dans
-`docs/recette.md`.
+l'application, puis 6 à 8.
 
 | N° | Scénario | Résultat attendu | Constaté |
 |---|---|---|---|

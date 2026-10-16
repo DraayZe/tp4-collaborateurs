@@ -28,7 +28,9 @@ public class EfreiForgeApp {
             return;
         }
 
-        Scanner scanner = new Scanner(System.in);
+        // Le clavier est lu avec l'encodage de la console (cp850 dans cmd, UTF-8 dans IntelliJ) :
+        // sans ça, Java décode en UTF-8 et les accents saisis dans cmd arrivent cassés en base.
+        Scanner scanner = new Scanner(System.in, System.out.charset());
         MenuCollaborateurs menuCollaborateurs =
                 new MenuCollaborateurs(new CollaborateurService(fabrique), scanner);
         MenuEquipes menuEquipes = new MenuEquipes(new EquipeService(fabrique), scanner);
