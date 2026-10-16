@@ -5,6 +5,7 @@
 CREATE DATABASE IF NOT EXISTS efreiforge
   CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 USE efreiforge;
+SET NAMES utf8mb4;   -- le fichier est en UTF-8 : évite les accents cassés quel que soit le client
 
 DROP TABLE IF EXISTS collaborateur;
 DROP TABLE IF EXISTS equipe;

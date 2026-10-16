@@ -11,7 +11,7 @@ requêtes, script SQL) puis un plan de 9 étapes :
 
 1. Mapping JPA de l'équipe ✔
 2. Script SQL et jeu de données ✔
-3. Point d'entrée `EfreiForgeApp` et menu Collaborateurs
+3. Point d'entrée `EfreiForgeApp` et menu Collaborateurs ✔
 4. Exceptions métier, création et liste des équipes
 5. Affecter un collaborateur, afficher les membres
 6. Retirer un collaborateur, lister les sans-équipe
@@ -63,8 +63,19 @@ l'application démarre quand même, sur des tables vides.
   équipe). Importé deux fois de suite sans erreur. L'application du TP4 lancée
   sur cette base affiche la fiche de C001 avec « Équipe : Dev », et Hibernate ne
   crée aucune table supplémentaire : le script et le mapping sont alignés.
+- Étape 3 : `HelloEfrei` devient `EfreiForgeApp`, le point d'entrée. Il ouvre la
+  connexion JPA une seule fois (message clair et arrêt si la base est inaccessible),
+  affiche le menu principal (Collaborateurs / Équipes / Quitter) et délègue aux
+  sous-menus. `MenuCollaborateurs` reprend les 9 options du TP4 ; les tris et
+  filtres construisent un `Annuaire` rempli depuis la base à chaque demande
+  (`CollaborateurService.tous()`, requête JPQL), si bien que la base reste la seule
+  source de vérité. La petite classe `Saisie` regroupe la lecture d'un entier
+  (retourne -1 si ce n'est pas un nombre) et d'un texte, pour ne pas répéter
+  `hasNextInt()` dans chaque menu. Vérifié : liste des 8 collaborateurs, fiche de
+  C001 avec son équipe, et trois saisies de texte à la place d'un nombre qui
+  donnent « Saisie invalide » sans plantage.
 
-**Ce qui reste incomplet** : les étapes 3 à 9. Les bonus (transfert direct,
+**Ce qui reste incomplet** : les étapes 4 à 9. Les bonus (transfert direct,
 vue d'ensemble des effectifs) ne sont pas prévus.
 
 **Difficultés significatives** :
@@ -73,6 +84,15 @@ vue d'ensemble des effectifs) ne sont pas prévus.
   en CRLF (1200 lignes modifiées sans aucun changement réel), parce que Desktop
   n'applique pas le réglage `autocrlf` de Git. Résolu en abandonnant ce commit et
   en ajoutant un `.gitattributes` (`* text=auto`), lu par tous les outils.
+- Console illisible : Hibernate affichait chaque requête SQL (`show_sql`) et ses
+  messages d'information au démarrage, au milieu du menu. `show_sql` est passé à
+  `false`, un fichier `simplelogger.properties` limite SLF4J au niveau `warn`, et
+  une ligne au début de `main` (`org.jboss.logging.provider = slf4j`) force
+  Hibernate à passer par SLF4J : sans elle, il utilisait `java.util.logging`, que
+  notre configuration ne contrôle pas.
+- Accents cassés (« Fran├ºois ») après un import du script en ligne de commande
+  sans préciser l'encodage. Ajout de `SET NAMES utf8mb4;` en tête du script :
+  le fichier est en UTF-8 et le serveur le sait, quel que soit le client.
 
 ### Tableau de recette
 

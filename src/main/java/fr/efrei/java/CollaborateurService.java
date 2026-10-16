@@ -68,6 +68,14 @@ public class CollaborateurService {
         }
     }
 
+    /** Tous les collaborateurs, triés par identifiant (JPQL). */
+    public List<Collaborateur> tous() {
+        try (EntityManager em = fabrique.createEntityManager()) {
+            return em.createQuery("select c from Collaborateur c order by c.identifiant", Collaborateur.class)
+                     .getResultList();
+        }
+    }
+
     /**
      * Augmente le salaire d'un collaborateur enregistré en base.
      *
