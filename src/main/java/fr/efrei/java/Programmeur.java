@@ -14,7 +14,7 @@ import jakarta.persistence.Entity;
 @DiscriminatorValue("PROGRAMMEUR")
 public class Programmeur extends Collaborateur implements Formateur {
 
-    @Column(length = 30)
+    @Column(name = "langage_prefere", length = 30)
     private String langagePrefere;
 
     protected Programmeur() { }   // exigé par JPA

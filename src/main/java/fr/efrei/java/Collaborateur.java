@@ -13,6 +13,7 @@ import jakarta.persistence.*;
  * et d'une méthode abstraite getMetier() pour les affichages polymorphes.
  */
 @Entity
+@Table(name = "collaborateur")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "type")
 public abstract class Collaborateur {

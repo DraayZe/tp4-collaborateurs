@@ -8,6 +8,7 @@ import jakarta.persistence.*;
  * Mission 9 : entité avec sa propre table, clé générée par la base.
  */
 @Entity
+@Table(name = "adresse")
 public class Adresse {
 
     @Id
@@ -19,7 +20,10 @@ public class Adresse {
     }
 
     private String rue;
+
+    @Column(name = "code_postal")
     private String codePostal;
+
     private String ville;
     private String pays;
 

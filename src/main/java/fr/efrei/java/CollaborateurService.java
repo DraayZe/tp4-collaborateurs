@@ -90,4 +90,14 @@ public class CollaborateurService {
             }
         }
     }
+
+    /**
+     * Retourne tous les collaborateurs enregistrés en base ordonnés par identifiant.
+     */
+    public List<Collaborateur> tous() {
+        try (EntityManager em = fabrique.createEntityManager()) {
+            return em.createQuery("SELECT c FROM Collaborateur c ORDER BY c.identifiant ASC", Collaborateur.class)
+                    .getResultList();
+        }
+    }
 }
