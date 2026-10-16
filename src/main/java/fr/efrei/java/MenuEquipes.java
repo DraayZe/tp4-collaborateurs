@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 /**
  * Sous-menu Equipes.
- * Toute la logique est dans EquipeService? ici on ne fait que saisir et afficher.
+ * Toute la logique est dans EquipeService ; ici on ne fait que saisir et afficher.
  */
 public class MenuEquipes {
 
@@ -27,6 +27,8 @@ public class MenuEquipes {
                     case 0 -> { }
                     case 1 -> listerEquipes();
                     case 2 -> creerEquipe();
+                    case 3 -> renommerEquipe();
+                    case 4 -> supprimerEquipe();
                     case 5 -> afficherMembres();
                     case 6 -> affecterCollaborateur();
                     case 7 -> retirerCollaborateur();
@@ -72,6 +74,19 @@ public class MenuEquipes {
         String nom = Saisie.lireTexte(scanner, "Nom de la nouvelle équipe : ");
         Equipe equipe = service.creer(nom);
         System.out.println("Équipe « " + equipe.getNom() + " » créée.");
+    }
+
+    private void renommerEquipe() {
+        String nom = Saisie.lireTexte(scanner, "Nom actuel de l'équipe : ");
+        String nouveauNom = Saisie.lireTexte(scanner, "Nouveau nom : ");
+        service.renommer(nom, nouveauNom);
+        System.out.println("Équipe renommée en « " + nouveauNom + " ».");
+    }
+
+    private void supprimerEquipe() {
+        String nom = Saisie.lireTexte(scanner, "Nom de l'équipe à supprimer : ");
+        service.supprimer(nom);
+        System.out.println("Équipe « " + nom + " » supprimée.");
     }
 
     private void afficherMembres() {

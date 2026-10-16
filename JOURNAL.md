@@ -15,7 +15,7 @@ requêtes, script SQL) puis un plan de 9 étapes :
 4. Exceptions métier, création et liste des équipes ✔
 5. Affecter un collaborateur, afficher les membres ✔
 6. Retirer un collaborateur, lister les sans-équipe ✔
-7. Renommer et supprimer une équipe
+7. Renommer et supprimer une équipe ✔
 8. Robustesse (base arrêtée) et recette complète
 9. Journal, port 3306, archive
 
@@ -108,8 +108,17 @@ l'application démarre quand même, sur des tables vides.
   en affectant C007 et C008 à Gamma, le message « tous ont une équipe » s'affiche,
   et ils réapparaissent une fois retirés. Appuyer sur Entrée sans rien saisir
   donne « introuvable », sans plantage.
+- Étape 7 : `EquipeService.renommer` cherche une équipe portant déjà le nouveau
+  nom et ne refuse que si c'est une **autre** équipe (`id` différent) : changer
+  seulement la casse de son propre nom passe donc naturellement. `supprimer`
+  réutilise la requête des membres et refuse tant que la liste n'est pas vide,
+  puis `em.remove`. Options 3 et 4 du menu. Vérifié, scénario 7 : Alpha → ALPHA
+  accepté ; ALPHA → dev refusé (« une équipe « Dev » existe déjà ») ; nom vide
+  refusé ; supprimer Dev refusé (3 collaborateurs) ; supprimer ALPHA refusé tant
+  que C006 y est, accepté une fois C006 retiré ; Gamma (vide) supprimée. La base
+  ne contient plus que Dev et Support, et C006 est sans équipe.
 
-**Ce qui reste incomplet** : les étapes 7 à 9. Les bonus (transfert direct,
+**Ce qui reste incomplet** : les étapes 8 et 9. Les bonus (transfert direct,
 vue d'ensemble des effectifs) ne sont pas prévus.
 
 **Difficultés significatives** :

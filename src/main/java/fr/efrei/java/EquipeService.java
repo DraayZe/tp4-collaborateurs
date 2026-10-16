@@ -138,6 +138,58 @@ public class EquipeService {
         }
     }
 
+    /**
+     * Renomme une équipe. Changer seulement la casse de son propre nom est accepté :
+     * l'équipe trouvée sous le nouveau nom est alors elle-même.
+     * @throws EquipeIntrouvableException
+     * @throws OperationRefuseeException si le nouveau nom est vide, trop long,
+     *         ou déjà porté par une autre équipe.
+     */
+    public void renommer(String nom, String nouveauNom) {
+        try (EntityManager em = fabrique.createEntityManager()) {
+            EntityTransaction transaction = em.getTransaction();
+            transaction.begin();
+            try {
+                Equipe equipe = chargerEquipe(em, nom);
+                String nomPropre = nomValide(nouveauNom);
+                Equipe homonyme = chercherParNom(em, nomPropre);
+                if (homonyme != null && !homonyme.getId().equals(equipe.getId())) {
+                    throw new OperationRefuseeException("une équipe « " + homonyme.getNom() + " » existe déjà.");
+                }
+                equipe.setNom(nomPropre);
+                transaction.commit();
+            } catch (RuntimeException e) {
+                transaction.rollback();
+                throw e;
+            }
+        }
+    }
+
+    /**
+     * Supprime une équipe vide.
+     * @throws EquipeIntrouvableException
+     * @throws OperationRefuseeException si elle contient encore des collaborateurs.
+     */
+    public void supprimer(String nom) {
+        try (EntityManager em = fabrique.createEntityManager()) {
+            EntityTransaction transaction = em.getTransaction();
+            transaction.begin();
+            try {
+                Equipe equipe = chargerEquipe(em, nom);
+                List<Collaborateur> membres = membresDe(em, equipe);
+                if (!membres.isEmpty()) {
+                    throw new OperationRefuseeException("l'équipe " + equipe.getNom()
+                            + " contient encore " + membres.size() + " collaborateur(s).");
+                }
+                em.remove(equipe);
+                transaction.commit();
+            } catch (RuntimeException e) {
+                transaction.rollback();
+                throw e;
+            }
+        }
+    }
+
     // --- Méthodes privées partagées ---
 
     /** Membres d'une équipe déjà chargée, par identifiant. */
