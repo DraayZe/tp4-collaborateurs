@@ -30,6 +30,8 @@ public class MenuEquipes {
                     case 2 -> creerEquipe();
                     case 5 -> afficherMembres();
                     case 6 -> affecterCollaborateur();
+                    case 7 -> retirerCollaborateur();
+                    case 8 -> afficherSansEquipe();
                     case -1 -> System.out.println("Saisie invalide : entrez un nombre.");
                     default -> System.out.println("Option invalide. Choisissez entre 0 et 8.");
                 }
@@ -91,5 +93,24 @@ public class MenuEquipes {
         String nom = Saisie.lireTexte(scanner, "Nom de l'équipe : ");
         service.affecter(identifiant, nom);
         System.out.println(identifiant + " affecté à l'équipe " + nom + ".");
+    }
+
+    private void retirerCollaborateur() {
+        String identifiant = Saisie.lireTexte(scanner, "Identifiant du collaborateur : ");
+        String nom = Saisie.lireTexte(scanner, "Nom de l'équipe : ");
+        service.retirer(identifiant, nom);
+        System.out.println(identifiant + " retiré de l'équipe " + nom + ".");
+    }
+
+    private void afficherSansEquipe() {
+        List<Collaborateur> liste = service.sansEquipe();
+        if (liste.isEmpty()) {
+            System.out.println("Tous les collaborateurs ont une équipe.");
+            return;
+        }
+        System.out.println("Collaborateurs sans équipe (" + liste.size() + ") :");
+        for (Collaborateur c : liste) {
+            System.out.println("  " + c);
+        }
     }
 }

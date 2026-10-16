@@ -53,6 +53,15 @@ public class EquipeService {
         }
     }
 
+    /** Collaborateurs qui n'ont aucune équipe, par identifiant. */
+    public List<Collaborateur> sansEquipe() {
+        try (EntityManager em = fabrique.createEntityManager()) {
+            return em.createQuery("select c from Collaborateur c where c.equipe is null order by c.identifiant",
+                                  Collaborateur.class)
+                     .getResultList();
+        }
+    }
+
     // --- Écriture ---
 
     /**
@@ -103,6 +112,35 @@ public class EquipeService {
                             + " appartient déjà à l'équipe " + collaborateur.getEquipe().getNom() + ".");
                 }
                 collaborateur.setEquipe(equipe);
+                transaction.commit();
+            } catch (RuntimeException e) {
+                transaction.rollback();
+                throw e;
+            }
+        }
+    }
+
+    /**
+     * Retire un collaborateur de l'équipe indiquée.
+     *
+     * @throws CollaborateurIntrouvableException, EquipeIntrouvableException
+     * @throws OperationRefuseeException s'il n'est pas membre de cette équipe
+     *         (sans équipe, ou membre d'une autre équipe).
+     */
+    public void retirer(String identifiant, String nomEquipe) {
+        try (EntityManager em = fabrique.createEntityManager()) {
+            EntityTransaction transaction = em.getTransaction();
+            transaction.begin();
+            try {
+                Collaborateur collaborateur = chargerCollaborateur(em, identifiant);
+                Equipe equipe = chargerEquipe(em, nomEquipe);
+                boolean membre = collaborateur.getEquipe() != null
+                        && collaborateur.getEquipe().getId().equals(equipe.getId());
+                if (!membre) {
+                    throw new OperationRefuseeException(collaborateur.getIdentifiant()
+                            + " n'est pas membre de l'équipe " + equipe.getNom() + ".");
+                }
+                collaborateur.setEquipe(null);
                 transaction.commit();
             } catch (RuntimeException e) {
                 transaction.rollback();

@@ -14,7 +14,7 @@ requêtes, script SQL) puis un plan de 9 étapes :
 3. Point d'entrée `EfreiForgeApp` et menu Collaborateurs ✔
 4. Exceptions métier, création et liste des équipes ✔
 5. Affecter un collaborateur, afficher les membres ✔
-6. Retirer un collaborateur, lister les sans-équipe
+6. Retirer un collaborateur, lister les sans-équipe ✔
 7. Renommer et supprimer une équipe
 8. Robustesse (base arrêtée) et recette complète
 9. Journal, port 3306, archive
@@ -98,8 +98,18 @@ l'application démarre quand même, sur des tables vides.
   « Omega » donnent « introuvable ». Un identifiant tapé en minuscules (`c001`)
   est accepté, MariaDB ignorant la casse ; la fiche reprend alors la saisie
   (`[c001]`), ce que nous avons jugé acceptable.
+- Étape 6 : `EquipeService.retirer` vérifie que le collaborateur appartient bien à
+  l'équipe indiquée (comparaison des `id`), sinon refuse ; `sansEquipe` liste les
+  collaborateurs dont `equipe is null`. Options 7 et 8 du menu, avec le message
+  « Tous les collaborateurs ont une équipe. » quand la liste est vide. Vérifié,
+  scénarios 4 et 5 : retirer d'Alpha un collaborateur sans équipe (C007) puis un
+  membre de Dev (C001) donne deux refus et les listes d'Alpha et de Dev sont
+  inchangées ; la liste des sans-équipe contient C007 et C008 mais plus C006 ;
+  en affectant C007 et C008 à Gamma, le message « tous ont une équipe » s'affiche,
+  et ils réapparaissent une fois retirés. Appuyer sur Entrée sans rien saisir
+  donne « introuvable », sans plantage.
 
-**Ce qui reste incomplet** : les étapes 6 à 9. Les bonus (transfert direct,
+**Ce qui reste incomplet** : les étapes 7 à 9. Les bonus (transfert direct,
 vue d'ensemble des effectifs) ne sont pas prévus.
 
 **Difficultés significatives** :
