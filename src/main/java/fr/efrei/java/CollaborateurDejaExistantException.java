@@ -1,6 +1,6 @@
 package fr.efrei.java;
 
-public class CollaborateurDejaExistantException extends RuntimeException {
+public class CollaborateurDejaExistantException extends RegleMetierException {
 
     private final String identifiant;
 

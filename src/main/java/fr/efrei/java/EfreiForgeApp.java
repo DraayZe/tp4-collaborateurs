@@ -31,6 +31,7 @@ public class EfreiForgeApp {
         Scanner scanner = new Scanner(System.in);
         MenuCollaborateurs menuCollaborateurs =
                 new MenuCollaborateurs(new CollaborateurService(fabrique), scanner);
+        MenuEquipes menuEquipes = new MenuEquipes(new EquipeService(fabrique), scanner);
 
         int choix = -1;
         while (choix != 0) {
@@ -40,6 +41,7 @@ public class EfreiForgeApp {
                 switch (choix) {
                     case 0 -> System.out.println("À bientôt !");
                     case 1 -> menuCollaborateurs.afficher();
+                    case 2 -> menuEquipes.afficher();
                     case -1 -> System.out.println("Saisie invalide : entrez un nombre.");
                     default -> System.out.println("Option invalide. Choisissez entre 0 et 2.");
                 }

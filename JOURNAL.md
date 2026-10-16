@@ -12,7 +12,7 @@ requêtes, script SQL) puis un plan de 9 étapes :
 1. Mapping JPA de l'équipe ✔
 2. Script SQL et jeu de données ✔
 3. Point d'entrée `EfreiForgeApp` et menu Collaborateurs ✔
-4. Exceptions métier, création et liste des équipes
+4. Exceptions métier, création et liste des équipes ✔
 5. Affecter un collaborateur, afficher les membres
 6. Retirer un collaborateur, lister les sans-équipe
 7. Renommer et supprimer une équipe
@@ -74,8 +74,21 @@ l'application démarre quand même, sur des tables vides.
   `hasNextInt()` dans chaque menu. Vérifié : liste des 8 collaborateurs, fiche de
   C001 avec son équipe, et trois saisies de texte à la place d'un nombre qui
   donnent « Saisie invalide » sans plantage.
+- Étape 4 : les erreurs métier forment une famille : `RegleMetierException`
+  (classe mère, message prêt à afficher) et ses sous-classes
+  `EquipeIntrouvableException`, `CollaborateurIntrouvableException`,
+  `OperationRefuseeException` ; `CollaborateurDejaExistantException` du TP4 la
+  rejoint. Le menu les attrape toutes au même endroit et affiche le message.
+  `EquipeService` est créé sur le modèle de `CollaborateurService`, avec `creer`,
+  `toutes` et `trouverParNom`. Le nom est nettoyé (`trim`), refusé s'il est vide
+  ou dépasse 50 caractères, et l'unicité ignore la casse grâce à la requête JPQL
+  `where lower(e.nom) = lower(:nom)`. Le sous-menu Équipes est branché
+  (options 1 et 2). Vérifié, scénario 1 de la recette : « Alpha » créée,
+  « alpha » refusée, nom vide refusé ; en plus, « ␣␣Gamma␣␣ » est enregistrée
+  « Gamma » et un nom de 60 caractères est refusé avec un message, pas une
+  erreur SQL.
 
-**Ce qui reste incomplet** : les étapes 4 à 9. Les bonus (transfert direct,
+**Ce qui reste incomplet** : les étapes 5 à 9. Les bonus (transfert direct,
 vue d'ensemble des effectifs) ne sont pas prévus.
 
 **Difficultés significatives** :
