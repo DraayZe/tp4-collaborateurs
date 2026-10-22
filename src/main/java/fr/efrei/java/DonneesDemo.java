@@ -3,18 +3,10 @@ package fr.efrei.java;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Fournit un jeu de données de démonstration : 20 collaborateurs (C001–C020).
- * Classe utilitaire — constructeur privé, uniquement des méthodes statiques.
- */
 public class DonneesDemo {
 
     private DonneesDemo() { }
 
-    /**
-     * Crée et retourne une liste de 20 collaborateurs répartis sur 3 sites.
-     * Mix de Programmeur et Testeur, avec des langages variés.
-     */
     public static List<Collaborateur> creerCollaborateurs() {
 
         Adresse paris     = new Adresse("12 rue des Lilas",          "75000", "Paris",     "France");

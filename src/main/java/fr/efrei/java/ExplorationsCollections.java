@@ -8,15 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * Classe pédagogique — Explorations des Collections Java.
- *
- * Quatre missions progressives pour illustrer les notions clés du TP3 :
- *   Mission 1 : List et généricité
- *   Mission 2 : Recherche dans une liste (complexité O(n))
- *   Mission 3 : Égalité logique avec equals() et hashCode()
- *   Mission 4 : Map — accès direct par clé en O(1)
- */
 public class ExplorationsCollections {
 
     public static void main(String[] args) {
@@ -30,12 +21,6 @@ public class ExplorationsCollections {
     // Mission 1 — List et généricité
     // =========================================================================
 
-    /**
-     * Démontre l'utilisation de ArrayList<Collaborateur> :
-     *   - La généricité garantit la cohérence du type à la COMPILATION.
-     *   - Pas de cast explicite lors de la récupération d'un élément.
-     *   - Parcours avec for-each (Iterable).
-     */
     public static void mission1ListeEtGenericite() {
         System.out.println("=== Mission 1 : List et Généricité ===");
 
@@ -78,11 +63,6 @@ public class ExplorationsCollections {
     // Mission 2 — Recherche dans une liste
     // =========================================================================
 
-    /**
-     * Démontre les limites d'une recherche linéaire dans une List :
-     *   - Complexité O(n) : on parcourt potentiellement toute la liste.
-     *   - Transition naturelle vers la Map (Mission 4) pour un accès en O(1).
-     */
     public static void mission2RechercheDansUneListe() {
         System.out.println("=== Mission 2 : Recherche dans une liste ===");
 
@@ -115,14 +95,6 @@ public class ExplorationsCollections {
     // Mission 3 — Égalité logique : equals() et hashCode()
     // =========================================================================
 
-    /**
-     * Démontre pourquoi implémenter equals() et hashCode() est indispensable
-     * pour que les collections (Set, Map, contains...) fonctionnent correctement.
-     *
-     * Règle d'or du contrat Java :
-     *   Si a.equals(b) == true, alors a.hashCode() == b.hashCode() OBLIGATOIREMENT.
-     *   (L'inverse n'est pas vrai : deux objets peuvent avoir le même hashCode sans être equals.)
-     */
     public static void mission3EgaliteLogique() {
         System.out.println("=== Mission 3 : Égalité logique — equals() et hashCode() ===");
 
@@ -173,14 +145,6 @@ public class ExplorationsCollections {
     // Mission 4 — Map : accès direct par clé
     // =========================================================================
 
-    /**
-     * Démontre les bases de HashMap et LinkedHashMap :
-     *   - put() écrase silencieusement si la clé existe déjà.
-     *   - containsKey() pour protéger avant un put().
-     *   - putIfAbsent() : insère seulement si la clé est absente.
-     *   - get() en O(1) — pas de boucle.
-     *   - Différence HashMap (ordre aléatoire) vs LinkedHashMap (ordre d'insertion).
-     */
     public static void mission4Map() {
         System.out.println("=== Mission 4 : Map — accès direct par clé ===");
 

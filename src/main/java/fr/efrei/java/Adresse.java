@@ -2,11 +2,6 @@ package fr.efrei.java;
 
 import jakarta.persistence.*;
 
-/**
- * Représente l'adresse postale d'un collaborateur.
- * Reprise de TP2 avec ajout de toString() pour les affichages en ligne (Annuaire).
- * Mission 9 : entité avec sa propre table, clé générée par la base.
- */
 @Entity
 @Table(name = "adresse")
 public class Adresse {
@@ -37,14 +32,12 @@ public class Adresse {
     public String getVille()      { return ville; }
     public String getPays()       { return pays; }
 
-    /** Affichage multiligne (hérité du TP2 — utilisé dans afficherFiche()). */
     public void afficher() {
         System.out.println(rue);
         System.out.println(codePostal + " " + ville);
         System.out.println(pays);
     }
 
-    /** Représentation compacte sur une ligne (utilisée dans toString() de Collaborateur). */
     @Override
     public String toString() {
         return rue + ", " + codePostal + " " + ville + " (" + pays + ")";

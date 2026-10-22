@@ -2,12 +2,6 @@ package fr.efrei.java;
 
 import jakarta.persistence.*;
 
-/**
- * Équipe de la start-up.
- * Association unidirectionnelle : c'est le Collaborateur qui référence son équipe
- * (champ equipe), l'équipe ne connaît pas ses membres. Le nom est obligatoire et
- * unique (casse ignorée) : cette règle est garantie par EquipeService, pas par la base.
- */
 @Entity
 @Table(name = "equipe")
 public class Equipe {

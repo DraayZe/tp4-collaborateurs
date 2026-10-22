@@ -65,7 +65,6 @@ public class MenuCollaborateurs {
         System.out.print("Votre choix : ");
     }
 
-    /** Construit un Annuaire à partir de la base : les tris et filtres du TP4 restent inchangés. */
     private Annuaire annuaire() {
         Annuaire annuaire = new Annuaire();
         for (Collaborateur c : service.tous()) {
@@ -104,7 +103,6 @@ public class MenuCollaborateurs {
         }
     }
 
-    /** List<? extends Collaborateur> accepte aussi bien List<Collaborateur> que List<Programmeur>. */
     private static void afficherListe(List<? extends Collaborateur> liste) {
         if (liste.isEmpty()) {
             System.out.println("Aucun collaborateur trouvé.");

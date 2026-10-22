@@ -5,12 +5,6 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.PersistenceException;
 
-/**
- * Point d'entrée de l'application EFREIForge.
- *
- * Ouvre la connexion JPA une seule fois, puis délègue aux sous-menus.
- * Les règles métier sont dans les services ; ici on ne fait que saisir et afficher.
- */
 public class EfreiForgeApp {
 
     public static void main(String[] args) {

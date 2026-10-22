@@ -4,12 +4,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 
-/**
- * Programmeur : collaborateur spécialisé dans le développement logiciel.
- * Implémente Formateur car un programmeur peut animer des formations internes.
- *
- * Reprise du TP2 avec ajout de l'identifiant (délégué à Collaborateur).
- */
 @Entity
 @DiscriminatorValue("PROGRAMMEUR")
 public class Programmeur extends Collaborateur implements Formateur {

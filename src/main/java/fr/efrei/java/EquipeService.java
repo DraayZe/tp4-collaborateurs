@@ -5,12 +5,6 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import java.util.List;
 
-/**
- * Opérations sur les équipes (JPA).
- * Un EntityManager par méthode et une transaction pour chaque écriture. Toutes les vérifications ont lieu avant
- * la moindre modification : une opération refusée lève une RegleMetierException,
- * la transaction est annulée et la base n'est pas modifiée.
- */
 public class EquipeService {
 
     private final EntityManagerFactory fabrique;
@@ -19,8 +13,6 @@ public class EquipeService {
         this.fabrique = fabrique;
     }
 
-
-    /** Toutes les équipes, par ordre alphabétique. */
     public List<Equipe> toutes() {
         try (EntityManager em = fabrique.createEntityManager()) {
             return em.createQuery("select e from Equipe e order by e.nom", Equipe.class)
@@ -28,27 +20,18 @@ public class EquipeService {
         }
     }
 
-    /**
-     * Retrouve une équipe par son nom (casse ignorée).
-     * @throws EquipeIntrouvableException si aucune équipe ne porte ce nom.
-     */
     public Equipe trouverParNom(String nom) {
         try (EntityManager em = fabrique.createEntityManager()) {
             return chargerEquipe(em, nom);
         }
     }
 
-    /**
-     * Collaborateurs d'une équipe, par identifiant.
-     * @throws EquipeIntrouvableException si l'équipe n'existe pas.
-     */
     public List<Collaborateur> membres(String nomEquipe) {
         try (EntityManager em = fabrique.createEntityManager()) {
             return membresDe(em, chargerEquipe(em, nomEquipe));
         }
     }
 
-    /** Collaborateurs qui n'ont aucune équipe, par identifiant. */
     public List<Collaborateur> sansEquipe() {
         try (EntityManager em = fabrique.createEntityManager()) {
             return em.createQuery("select c from Collaborateur c where c.equipe is null order by c.identifiant",
@@ -57,10 +40,6 @@ public class EquipeService {
         }
     }
 
-    /**
-     * Crée une équipe.
-     * @throws OperationRefuseeException si le nom est vide, trop long ou déjà utilisé (casse ignorée).
-     */
     public Equipe creer(String nom) {
         try (EntityManager em = fabrique.createEntityManager()) {
             EntityTransaction transaction = em.getTransaction();
@@ -82,14 +61,6 @@ public class EquipeService {
         }
     }
 
-    /**
-     * Affecte un collaborateur sans équipe à une équipe.
-     * Équipe et collaborateur sont chargés avec le même EntityManager, dans la même
-     * transaction : au commit, Hibernate détecte le changement et génère l'UPDATE,
-     * exactement comme pour augmenterSalaire au TP4.
-     * @throws CollaborateurIntrouvableException, EquipeIntrouvableException
-     * @throws OperationRefuseeException si le collaborateur a déjà une équipe (même celle-ci).
-     */
     public void affecter(String identifiant, String nomEquipe) {
         try (EntityManager em = fabrique.createEntityManager()) {
             EntityTransaction transaction = em.getTransaction();
@@ -110,12 +81,6 @@ public class EquipeService {
         }
     }
 
-    /**
-     * Retire un collaborateur de l'équipe indiquée.
-     * @throws CollaborateurIntrouvableException, EquipeIntrouvableException
-     * @throws OperationRefuseeException s'il n'est pas membre de cette équipe
-     *         (sans équipe, ou membre d'une autre équipe).
-     */
     public void retirer(String identifiant, String nomEquipe) {
         try (EntityManager em = fabrique.createEntityManager()) {
             EntityTransaction transaction = em.getTransaction();
@@ -138,13 +103,6 @@ public class EquipeService {
         }
     }
 
-    /**
-     * Renomme une équipe. Changer seulement la casse de son propre nom est accepté :
-     * l'équipe trouvée sous le nouveau nom est alors elle-même.
-     * @throws EquipeIntrouvableException
-     * @throws OperationRefuseeException si le nouveau nom est vide, trop long,
-     *         ou déjà porté par une autre équipe.
-     */
     public void renommer(String nom, String nouveauNom) {
         try (EntityManager em = fabrique.createEntityManager()) {
             EntityTransaction transaction = em.getTransaction();
@@ -165,11 +123,6 @@ public class EquipeService {
         }
     }
 
-    /**
-     * Supprime une équipe vide.
-     * @throws EquipeIntrouvableException
-     * @throws OperationRefuseeException si elle contient encore des collaborateurs.
-     */
     public void supprimer(String nom) {
         try (EntityManager em = fabrique.createEntityManager()) {
             EntityTransaction transaction = em.getTransaction();
@@ -192,7 +145,6 @@ public class EquipeService {
 
     // --- Méthodes privées partagées ---
 
-    /** Membres d'une équipe déjà chargée, par identifiant. */
     private static List<Collaborateur> membresDe(EntityManager em, Equipe equipe) {
         return em.createQuery("select c from Collaborateur c where c.equipe = :equipe order by c.identifiant",
                               Collaborateur.class)
@@ -200,11 +152,6 @@ public class EquipeService {
                  .getResultList();
     }
 
-    /**
-     * Charge un collaborateur par son identifiant.
-     *
-     * @throws CollaborateurIntrouvableException s'il n'existe pas.
-     */
     private static Collaborateur chargerCollaborateur(EntityManager em, String identifiant) {
         Collaborateur collaborateur = em.find(Collaborateur.class, identifiant);
         if (collaborateur == null) {
@@ -213,7 +160,6 @@ public class EquipeService {
         return collaborateur;
     }
 
-    /** Nettoie le nom saisi et refuse un nom vide ou trop long pour la colonne. */
     private static String nomValide(String nom) {
         String nomPropre = nom == null ? "" : nom.trim();
         if (nomPropre.isEmpty()) {
@@ -225,7 +171,6 @@ public class EquipeService {
         return nomPropre;
     }
 
-    /** Cherche une équipe par son nom, casse ignorée. Retourne null si elle n'existe pas. */
     private static Equipe chercherParNom(EntityManager em, String nom) {
         List<Equipe> resultat = em
                 .createQuery("select e from Equipe e where lower(e.nom) = lower(:nom)", Equipe.class)
@@ -234,10 +179,6 @@ public class EquipeService {
         return resultat.isEmpty() ? null : resultat.get(0);
     }
 
-    /**
-     * Charge une équipe par son nom.
-     * @throws EquipeIntrouvableException si elle n'existe pas.
-     */
     private static Equipe chargerEquipe(EntityManager em, String nom) {
         Equipe equipe = chercherParNom(em, nom);
         if (equipe == null) {

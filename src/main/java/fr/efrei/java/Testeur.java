@@ -3,11 +3,6 @@ package fr.efrei.java;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 
-/**
- * Testeur : collaborateur spécialisé dans les tests logiciels.
- *
- * Reprise du TP2 avec ajout de l'identifiant (délégué à Collaborateur).
- */
 @Entity
 @DiscriminatorValue("TESTEUR")
 public class Testeur extends Collaborateur {
