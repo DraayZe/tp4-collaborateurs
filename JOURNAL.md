@@ -177,35 +177,20 @@ Autres cas testés : base arrêtée avant le lancement, base coupée pendant
 l'utilisation, nom entouré d'espaces, nom de 60 caractères, identifiant en
 minuscules, Entrée à vide, tous les collaborateurs affectés. Tous OK.
 
-## 4. README - Lancer et essayer l'application
+## 4. README
 
-Prérequis : JDK 23, Maven (ou IntelliJ IDEA qui l'inclut), XAMPP avec MariaDB
-démarré sur le port 3306, utilisateur `root` sans mot de passe (config par
-défaut de XAMPP, voir `src/main/resources/META-INF/persistence.xml`).
+Il faut JDK 23, Maven (ou IntelliJ) et XAMPP avec MySQL lancé sur le port 3306
+(root sans mot de passe).
 
-Préparer la base : dans phpMyAdmin (`http://localhost/phpmyadmin`), onglet
-Importer, choisir `sql/efreiforge.sql`, puis Exécuter. Ça crée la base
-`efreiforge` avec 3 adresses, 8 collaborateurs, 2 équipes (Dev : C001, C002,
-C003 ; Support : C004, C005) et 3 collaborateurs sans équipe (C006, C007, C008).
-Le script peut être relancé, il repart de zéro. En ligne de commande :
-`mysql -u root < sql/efreiforge.sql`.
+1. Importer `sql/efreiforge.sql` dans phpMyAdmin (onglet Importer). Ça crée la
+   base `efreiforge` avec les équipes Dev et Support et 8 collaborateurs.
+2. Lancer `EfreiForgeApp` dans IntelliJ, ou en ligne de commande :
+   `mvn compile exec:java -Dexec.mainClass=fr.efrei.java.EfreiForgeApp`
+3. Dans le menu, choisir 2 (Équipes) pour gérer les équipes, ou 1 pour les
+   collaborateurs.
 
-Lancer : à la racine du projet,
-`mvn compile exec:java -Dexec.mainClass=fr.efrei.java.EfreiForgeApp`
-ou dans IntelliJ, clic droit sur `EfreiForgeApp` puis Run. Le menu principal
-propose Collaborateurs (menu du TP4) et Équipes.
-
-Essayer (menu Équipes) :
-1. `1` : affiche Dev et Support.
-2. `8` : C006, C007 et C008 sont sans équipe.
-3. `2` puis `Alpha` : équipe créée. `2` puis `alpha` : refusé (doublon, casse ignorée).
-4. `6`, `C006`, `Alpha` : C006 est affecté. `5`, `Alpha` : il apparaît.
-5. `6`, `C006`, `Dev` : refusé, il a déjà une équipe.
-6. `4`, `Alpha` : refusé tant qu'il y a un membre. `7`, `C006`, `Alpha` puis `4`, `Alpha` : supprimée.
-7. `0`, `0` pour quitter, relancer : tout est toujours en base.
-
-Si on tape du texte à la place d'un nombre, ou un nom d'équipe ou un identifiant
-qui n'existe pas, l'application affiche un message et continue.
+Pour essayer : créer une équipe Alpha (2), y affecter C006 (6), afficher ses
+membres (5), puis quitter et relancer pour voir que tout est resté en base.
 
 ## 5. Contribution de chacun
 
